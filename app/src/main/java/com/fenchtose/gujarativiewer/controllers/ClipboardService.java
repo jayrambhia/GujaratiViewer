@@ -1,19 +1,24 @@
 package com.fenchtose.gujarativiewer.controllers;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 
 import com.fenchtose.gujarativiewer.utils.Constants;
-import com.fenchtose.gujarativiewer.views.FloatingWindowView;
+import com.fenchtose.gujarativiewer.views.widgets.FloatingWindowView;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -95,6 +100,12 @@ public class ClipboardService extends Service implements ClipboardManager.OnPrim
                 public void onCancelClicked(FloatingWindowView window, View v) {
                     mWindowManager.removeViewImmediate(window);
                 }
+
+                @Override
+                public void onBackPressed(FloatingWindowView window) {
+                    mWindowManager.removeViewImmediate(window);
+                }
+
             });
         }
 
@@ -103,13 +114,36 @@ public class ClipboardService extends Service implements ClipboardManager.OnPrim
             return;
         }
 
-        WindowManager.LayoutParams mParams = new WindowManager.LayoutParams(400, 300, 60, 200,
-                WindowManager.LayoutParams.TYPE_PHONE, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+        DisplayMetrics dm = new DisplayMetrics();
+        mWindowManager.getDefaultDisplay().getMetrics(dm);
+
+        int width = dm.widthPixels;
+        int height = dm.heightPixels;
+
+        int xpos = 60;
+        int ypos = 120;
+
+        WindowManager.LayoutParams mParams = new WindowManager.LayoutParams(width - 2 * xpos,
+                height - 2 * ypos, xpos, ypos,
+                WindowManager.LayoutParams.TYPE_PHONE,
+                WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN,
                 PixelFormat.TRANSLUCENT);
 
         mParams.gravity = Gravity.TOP | Gravity.LEFT;
 
         mFloatingWindow.setContent(content);
         mWindowManager.addView(mFloatingWindow, mParams);
+    }
+
+    @Override
+    public void onTaskRemoved(Intent rootIntent) {
+        Intent restartService = new Intent(getApplicationContext(),
+                this.getClass());
+        restartService.setPackage(getPackageName());
+        PendingIntent restartServicePI = PendingIntent.getService(
+                getApplicationContext(), 1, restartService,
+                PendingIntent.FLAG_ONE_SHOT);
+        AlarmManager alarmService = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+        alarmService.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 1000, restartServicePI);
     }
 }

@@ -1,7 +1,8 @@
-package com.fenchtose.gujarativiewer.views;
+package com.fenchtose.gujarativiewer.views.widgets;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -45,6 +46,19 @@ public class FloatingWindowView extends LinearLayout implements View.OnClickList
         }
     }
 
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+
+        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+            if (mCallback != null) {
+                mCallback.onBackPressed(this);
+                return true;
+            }
+        }
+
+        return super.dispatchKeyEvent(event);
+    }
+
     public FloatingWindowCallback getCallback() {
         return mCallback;
     }
@@ -63,5 +77,8 @@ public class FloatingWindowView extends LinearLayout implements View.OnClickList
 
     public interface FloatingWindowCallback {
         void onCancelClicked(FloatingWindowView window, View v);
+        void onBackPressed(FloatingWindowView window);
     }
+
+
 }

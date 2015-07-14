@@ -1,19 +1,53 @@
 apply plugin: 'com.android.application'
 
+apply plugin: 'io.fabric'
+
+repositories {
+    maven { url 'https://maven.fabric.io/public' }
+}
+
+buildscript {
+    repositories {
+        maven { url 'https://maven.fabric.io/public' }
+    }
+
+    dependencies {
+        classpath 'io.fabric.tools:gradle:1.18.0'
+    }
+}
+
+def versionMajor = 0
+def versionMinor = 1
+def versionPatch = 1
+def versionBuild = 0
+def buildType = "alpha"
+def dailyRelease = 0
+
 android {
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
 
     defaultConfig {
-        applicationId "com.fenchtose.gujarativiewer"
-        minSdkVersion 16
+        minSdkVersion 11
         targetSdkVersion 22
-        versionCode 1
-        versionName "1.0"
+        versionCode versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild*10 + dailyRelease
     }
+
+    productFlavors {
+        stage {
+            applicationId "com.fenchtose.indicfeeder.stage"
+            versionName "${versionMajor}.${versionMinor}.${versionPatch}.${versionBuild}.${dailyRelease}_${buildType}_stage"
+        }
+
+        prod {
+            applicationId "com.fenchtose.indicfeeder"
+            versionName "${versionMajor}.${versionMinor}.${versionPatch}.${versionBuild}.${dailyRelease}"
+        }
+    }
+
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -22,4 +56,9 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:22.2.0'
+
+    // Crashlytics
+    compile('com.crashlytics.sdk.android:crashlytics:2.2.3@aar') {
+        transitive = true;
+    }
 }
