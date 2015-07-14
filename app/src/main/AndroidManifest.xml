@@ -30,9 +30,9 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".controllers.ClipboardService"/>
+        <service android:name=".controllers.services.ClipboardService"/>
 
-        <receiver android:name=".controllers.BootBroadcastReceiver">
+        <receiver android:name=".controllers.services.BootBroadcastReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" /> <!-- for htc -->

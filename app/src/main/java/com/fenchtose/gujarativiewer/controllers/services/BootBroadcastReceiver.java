@@ -1,4 +1,4 @@
-package com.fenchtose.gujarativiewer.controllers;
+package com.fenchtose.gujarativiewer.controllers.services;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

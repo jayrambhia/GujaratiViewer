@@ -1,4 +1,4 @@
-package com.fenchtose.gujarativiewer.controllers;
+package com.fenchtose.gujarativiewer.controllers.services;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
