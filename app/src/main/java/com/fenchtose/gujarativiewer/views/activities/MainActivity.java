@@ -5,6 +5,9 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.fenchtose.gujarativiewer.R;
@@ -38,4 +41,31 @@ public class MainActivity extends AppCompatActivity {
         startService(serviceIntent);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_share) {
+            shareApp();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void shareApp() {
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, getResources().getString(R.string.share_app_content));
+        sendIntent.setType("text/plain");
+
+        Intent chooserIntent = Intent.createChooser(sendIntent, "Share App Via..");
+        chooserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(chooserIntent);
+    }
 }

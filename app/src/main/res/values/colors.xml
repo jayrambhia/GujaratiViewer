@@ -11,4 +11,7 @@
     <color name="text_color">#ff212121</color>
 
     <color name="window_background">#ff6b6b6b</color>
+
+    <color name="bar_red">#FF3E41</color>
+    <color name="bar_red_light">#FF4F86</color>
 </resources>

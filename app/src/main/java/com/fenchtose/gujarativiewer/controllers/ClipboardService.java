@@ -8,6 +8,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.text.TextUtils;
@@ -17,6 +18,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 
+import com.fenchtose.gujarativiewer.R;
 import com.fenchtose.gujarativiewer.utils.Constants;
 import com.fenchtose.gujarativiewer.views.widgets.FloatingWindowView;
 
@@ -38,6 +40,9 @@ public class ClipboardService extends Service implements ClipboardManager.OnPrim
 
     private FloatingWindowView mFloatingWindow;
 
+    private Handler mHandler;
+    private final int DISMISS_TIMEOUT = 600;
+
     @Override
     public IBinder onBind(Intent intent) {
         return null;
@@ -51,6 +56,8 @@ public class ClipboardService extends Service implements ClipboardManager.OnPrim
 
         mClipboardManager = (ClipboardManager)getSystemService(CLIPBOARD_SERVICE);
         mClipboardManager.addPrimaryClipChangedListener(this);
+
+        mHandler = new Handler();
     }
 
     @Override
@@ -92,18 +99,30 @@ public class ClipboardService extends Service implements ClipboardManager.OnPrim
         }
     }
 
-    private void showFloatingWindow(CharSequence content) {
+    private void showFloatingWindow(final CharSequence content) {
         if (mFloatingWindow == null) {
             mFloatingWindow = new FloatingWindowView(this);
             mFloatingWindow.setCallback(new FloatingWindowView.FloatingWindowCallback() {
                 @Override
                 public void onCancelClicked(FloatingWindowView window, View v) {
-                    mWindowManager.removeViewImmediate(window);
+                    dismissView(window);
                 }
 
                 @Override
                 public void onBackPressed(FloatingWindowView window) {
-                    mWindowManager.removeViewImmediate(window);
+                    dismissView(window);
+                }
+
+                @Override
+                public void onShareClicked(FloatingWindowView window, View v) {
+                    dismissView(window);
+                    shareContent(content);
+                }
+
+                @Override
+                public void onFavClicked(FloatingWindowView window, View v) {
+                    dismissView(window);
+                    shareApp();
                 }
 
             });
@@ -145,5 +164,38 @@ public class ClipboardService extends Service implements ClipboardManager.OnPrim
                 PendingIntent.FLAG_ONE_SHOT);
         AlarmManager alarmService = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
         alarmService.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 1000, restartServicePI);
+    }
+
+    private void dismissView(final View view) {
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (view.getParent() != null) {
+                    mWindowManager.removeViewImmediate(view);
+                }
+            }
+        }, DISMISS_TIMEOUT);
+    }
+
+    private void shareContent(CharSequence content) {
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, content);
+        sendIntent.setType("text/plain");
+
+        Intent chooserIntent = Intent.createChooser(sendIntent, "Share Text Via..");
+        chooserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(chooserIntent);
+    }
+
+    private void shareApp() {
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, getResources().getString(R.string.share_app_content));
+        sendIntent.setType("text/plain");
+
+        Intent chooserIntent = Intent.createChooser(sendIntent, "Share App Via..");
+        chooserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(chooserIntent);
     }
 }

@@ -37,12 +37,29 @@ public class FloatingWindowView extends LinearLayout implements View.OnClickList
 
         ImageView cancelView = (ImageView)findViewById(R.id.imageview_close);
         cancelView.setOnClickListener(this);
+
+        ImageView shareView = (ImageView)findViewById(R.id.imageview_share);
+        shareView.setOnClickListener(this);
+
+        ImageView favView = (ImageView)findViewById(R.id.imageview_fav);
+        favView.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
         if (mCallback != null) {
-            mCallback.onCancelClicked(this, v);
+            switch (v.getId()) {
+                case R.id.imageview_close:
+                    mCallback.onCancelClicked(this, v);
+                    break;
+                case R.id.imageview_share:
+                    mCallback.onShareClicked(this, v);
+                    break;
+                case R.id.imageview_fav:
+                    mCallback.onFavClicked(this, v);
+                    break;
+            }
+
         }
     }
 
@@ -78,6 +95,8 @@ public class FloatingWindowView extends LinearLayout implements View.OnClickList
     public interface FloatingWindowCallback {
         void onCancelClicked(FloatingWindowView window, View v);
         void onBackPressed(FloatingWindowView window);
+        void onShareClicked(FloatingWindowView window, View v);
+        void onFavClicked(FloatingWindowView window, View v);
     }
 
 

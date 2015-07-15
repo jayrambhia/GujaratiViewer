@@ -19,8 +19,8 @@ buildscript {
 def versionMajor = 0
 def versionMinor = 1
 def versionPatch = 1
-def versionBuild = 0
-def buildType = "alpha"
+def versionBuild = 1
+def buildType = "beta"
 def dailyRelease = 0
 
 android {
