@@ -19,17 +19,17 @@ buildscript {
 def versionMajor = 0
 def versionMinor = 1
 def versionPatch = 1
-def versionBuild = 1
+def versionBuild = 2
 def buildType = "beta"
 def dailyRelease = 0
 
 android {
-    compileSdkVersion 22
-    buildToolsVersion "22.0.1"
+    compileSdkVersion 23
+    buildToolsVersion "23.0.1"
 
     defaultConfig {
-        minSdkVersion 11
-        targetSdkVersion 22
+        minSdkVersion 16
+        targetSdkVersion 23
         versionCode versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild*10 + dailyRelease
     }
 
@@ -55,7 +55,8 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:22.2.0'
+    compile 'com.android.support:appcompat-v7:23.1.0'
+    compile 'de.greenrobot:eventbus:2.4.0'
 
     // Crashlytics
     compile('com.crashlytics.sdk.android:crashlytics:2.2.3@aar') {

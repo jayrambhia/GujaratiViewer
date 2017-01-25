@@ -16,7 +16,10 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Log.i(TAG, "onBoot received");
 
-        Intent websocketServiceIntent = new Intent(context, ClipboardService.class);
-        context.startService(websocketServiceIntent);
+        Intent clipboardServiceIntent = new Intent(context, ClipboardService.class);
+        context.startService(clipboardServiceIntent);
+
+        Intent windowRenderingServiceIntent = new Intent(context, WindowRenderingService.class);
+        context.startService(windowRenderingServiceIntent);
     }
 }

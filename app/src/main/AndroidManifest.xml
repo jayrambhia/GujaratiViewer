@@ -39,6 +39,16 @@
             </intent-filter>
         </receiver>
 
+        <service android:name=".controllers.AutoGrabService"
+            android:canRetrieveWindowContent="true"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+        </service>
+
+        <service android:name=".controllers.WindowRenderingService"/>
+
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="b3a2c6cd9c46a17283801fd8bddcd6711690820d" />

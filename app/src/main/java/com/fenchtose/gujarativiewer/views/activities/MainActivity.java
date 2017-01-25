@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.fenchtose.gujarativiewer.R;
 import com.fenchtose.gujarativiewer.controllers.ClipboardService;
+import com.fenchtose.gujarativiewer.controllers.WindowRenderingService;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -39,6 +40,9 @@ public class MainActivity extends AppCompatActivity {
 
         Intent serviceIntent = new Intent(this, ClipboardService.class);
         startService(serviceIntent);
+
+        Intent windowRenderingServiceIntent = new Intent(this, WindowRenderingService.class);
+        startService(windowRenderingServiceIntent);
     }
 
     @Override
